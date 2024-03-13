@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "svelte.svelte-vscode",
+        "ardenivanov.svelte-intellisense",
+        "esbenp.prettier-vscode",
+        "pivaszbs.svelte-autoimport"
+    ]
+}
