@@ -8,6 +8,9 @@ project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacito
 include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.2/node_modules/@capacitor/filesystem/android')
 
+include ':capacitor-haptics'
+project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@5.0.7_@capacitor+core@5.7.2/node_modules/@capacitor/haptics/android')
+
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@5.0.7_@capacitor+core@5.7.2/node_modules/@capacitor/status-bar/android')
 
