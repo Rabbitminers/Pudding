@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	font-family: 'DM Sans';
+	color: var(--colour-accent);
+}
+
+:root {
+	--colour-accent: #1f1c2e;
+	--colour-neutral: #ffffff;
+	--colour-base: #f3f6fd;
+}
+
+.dark {
+	--colour-accent: #ffffff;
+	--colour-neutral: #000000;
+	--colour-base: #151515;
+}
+
+* {
+	user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+}
