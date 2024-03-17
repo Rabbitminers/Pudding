@@ -2,8 +2,8 @@
 	import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 	import { goto } from '$app/navigation';
-	import type { EpubBook } from '$lib/book';
 	import { Capacitor } from '@capacitor/core';
+	import type { EpubBook } from '$lib/book';
 
 	export let book: EpubBook;
 
@@ -49,24 +49,25 @@
 		const now = new Date().getTime();
 		const duration = now - started;
 
+		const id = book.metadata.book_id;
 		if (duration >= 600) {
 			await Haptics.impact({ style: ImpactStyle.Medium });
+			goto(`/details/?id=${id}`);
 		} else {
-			const id = book.metadata.book_id;
 			goto(`/reader/?id=${id}`);
 		}
 	}
 </script>
 
 <div
-	class="h-72 m-auto bg-neutral w-full rounded-3xl shadow-md"
+	class="m-auto h-72 w-full rounded-3xl bg-neutral shadow-md"
 	on:touchstart={touchDown}
 	on:touchend={touchUp}
 >
-	<section class="h-52 overflow-clip rounded-tl-3xl rounded-tr-3xl relative">
+	<section class="relative h-52 overflow-clip rounded-tl-3xl rounded-tr-3xl">
 		{#if book.metadata.coverImage}
 			<img
-				class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full"
+				class="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 transform"
 				src={Capacitor.convertFileSrc(book.metadata.coverImage)}
 				alt="cover"
 			/>
@@ -75,12 +76,12 @@
 		{/if}
 	</section>
 
-	<section class="w-full p-3 text-nowrap truncate">
-		<h3 class="font-bold truncate leading-3">{book.metadata.title}</h3>
-		<span class="font-medium text-sm opacity-50">{book.metadata.author ?? 'Missing Author'}</span>
+	<section class="w-full truncate text-nowrap p-3">
+		<h3 class="truncate font-bold leading-3">{book.metadata.title}</h3>
+		<span class="text-sm font-medium opacity-50">{book.metadata.author ?? 'Missing Author'}</span>
 
-		<div class="w-full h-2 rounded-full bg-base">
-			<div style="width: {book.metadata.completion}%" class="h-full bg-accent rounded-full" />
+		<div class="h-2 w-full rounded-full bg-base">
+			<div style="width: {book.metadata.completion}%" class="h-full rounded-full bg-accent" />
 		</div>
 	</section>
 </div>

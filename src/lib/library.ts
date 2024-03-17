@@ -43,7 +43,7 @@ export async function loadLibary(filepath: string = LIBRARY_FILE) {
     }
 }
 
-async function saveLibrary(filepath: string = LIBRARY_FILE) {
+export async function saveLibrary(filepath: string = LIBRARY_FILE) {
     const snapshot = get(library);
 
     const values = Array.from(snapshot.values());
@@ -82,3 +82,4 @@ export async function removeBookFromLibrary(book_id: string) {
 
     await saveLibrary();
 }
+    

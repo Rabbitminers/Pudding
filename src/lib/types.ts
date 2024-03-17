@@ -17,6 +17,7 @@ export interface ReaderTheme {
     body: {
       background?: string,
       color?: string,
+      'font-family'?: string,
     },
     '*'?: {
       color?: string,
