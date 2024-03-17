@@ -1,0 +1,8 @@
+{
+    "editor.formatOnSave": true,
+    "prettier.documentSelectors": ["**/*.svelte"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[svelte]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
