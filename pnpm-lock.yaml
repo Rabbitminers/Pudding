@@ -17,6 +17,9 @@ dependencies:
   '@capacitor/filesystem':
     specifier: ^5.2.1
     version: 5.2.1(@capacitor/core@5.7.2)
+  '@capacitor/haptics':
+    specifier: ^5.0.7
+    version: 5.0.7(@capacitor/core@5.7.2)
   '@capacitor/ios':
     specifier: ^5.7.2
     version: 5.7.2(@capacitor/core@5.7.2)
@@ -32,6 +35,12 @@ dependencies:
   epubjs:
     specifier: ^0.3.93
     version: 0.3.93
+  mode-watcher:
+    specifier: ^0.3.0
+    version: 0.3.0(svelte@4.2.12)
+  nanoid:
+    specifier: ^5.0.6
+    version: 5.0.6
   svelte-french-toast:
     specifier: ^1.2.0
     version: 1.2.0(svelte@4.2.12)
@@ -223,6 +232,14 @@ packages:
     resolution: {integrity: sha512-mexkJHUbNhydzfJywEUTIGARlB/HRogrtbjCZdA+mQxOi07T2887a70CwFaYRu1nKLMoKoliTM5UsLSsdl0PlA==}
     peerDependencies:
       '@capacitor/core': ^5.1.1
+    dependencies:
+      '@capacitor/core': 5.7.2
+    dev: false
+
+  /@capacitor/haptics@5.0.7(@capacitor/core@5.7.2):
+    resolution: {integrity: sha512-/j+7Qa4BxQA5aOU43cwXuiudfSXfoHFsAVfcehH5DkSjxLykZKWHEuE4uFJXqdkSIbAHjS37D0Sde6ENP6G/MA==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
     dependencies:
       '@capacitor/core': 5.7.2
     dev: false
@@ -3324,6 +3341,14 @@ packages:
       ufo: 1.4.0
     dev: true
 
+  /mode-watcher@0.3.0(svelte@4.2.12):
+    resolution: {integrity: sha512-k8jjuTx94HaaRKWO6JDf8wL761hFatrTIHJKl+E+3JWcnv+GnMBH062zcLsy0lbCI3n7RZxxHaWi66auFnUO4g==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.12
+    dev: false
+
   /modify-values@1.0.1:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
@@ -3352,6 +3377,12 @@ packages:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  /nanoid@5.0.6:
+    resolution: {integrity: sha512-rRq0eMHoGZxlvaFOUdK1Ev83Bd1IgzzR+WJ3IbDJ7QOSdAxYjlurSPqFs9s4lJg29RT6nPwizFtJhQS6V5xgiA==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
 
   /napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}

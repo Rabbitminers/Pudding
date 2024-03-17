@@ -1,52 +1,23 @@
 <script lang="ts">
+	import LibraryBook from '$lib/components/LibraryBook.svelte';
 	import Gear from '$lib/components/icons/Gear.svelte';
 	import Plus from '$lib/components/icons/Plus.svelte';
-	import Book from '$lib/components/Book.svelte';
+	import Layout from '$lib/components/Layout.svelte';
 
+	import { addBookToLibrary, library, loadLibary } from '$lib/library';
+	import { EpubBook } from '$lib/book';
 	import { ToastConfig } from '$lib/toast/constants';
-
-	import type { EpubBook } from '$lib/types';
+	import { LIBRARY_PATH } from '$lib/constants';
 
 	import { Directory, Filesystem } from '@capacitor/filesystem';
 	import { FilePicker } from '@capawesome/capacitor-file-picker';
-
-	import type { PickFilesResult, PickedFile } from '@capawesome/capacitor-file-picker';
+	import type { PickFilesResult } from '@capawesome/capacitor-file-picker';
+	import type { WriteFileResult } from '@capacitor/filesystem';
 
 	import toast from 'svelte-french-toast';
-	import Layout from '$lib/components/Layout.svelte';
-
-	const books: EpubBook[] = [
-		{
-			title: 'Charlie and the Chocolate Factory',
-			authors: ['Roald Dahl'],
-			progress: 30,
-			image_url: 'https://m.media-amazon.com/images/I/81Dp5Of3zeL._AC_UF894,1000_QL80_.jpg'
-		},
-		{
-			title: 'Charlie and the Great Glass Elevator',
-			authors: ['Roald Dahl'],
-			progress: 60,
-			image_url: 'https://m.media-amazon.com/images/I/91sAxVbwXiL._AC_UF894,1000_QL80_.jpg'
-		},
-		{
-			title: 'The Fine Print',
-			authors: ['Lauren Asher'],
-			progress: 70,
-			image_url: 'https://m.media-amazon.com/images/I/81pzRUTin6L._AC_UF894,1000_QL80_.jpg'
-		},
-		{
-			title: 'Final Offer',
-			authors: ['Lauren Asher'],
-			progress: 20,
-			image_url: 'https://i.ebayimg.com/images/g/-IgAAOSwb3tjz4Ts/s-l1600.jpg'
-		},
-		{
-			title: 'Terms and Conditions',
-			authors: ['Lauren Asher'],
-			progress: 100,
-			image_url: 'https://m.media-amazon.com/images/I/91HWpZXBJnL._AC_UF894,1000_QL80_.jpg'
-		}
-	];
+	import { Book } from 'epubjs';
+	import { nanoid } from 'nanoid';
+	import { onMount } from 'svelte';
 
 	async function addBooks(): Promise<void> {
 		const result = await pickBook();
@@ -56,17 +27,17 @@
 		}
 
 		if (result.files.length !== 1 && result.files[0]) {
-			alert('Invalid ammount');
+			toast.error('Invalid number of books selected', ToastConfig);
 		}
 
 		const book = result.files[0];
 
-		if (!book.data) {
+		if (!book.data || !book.path) {
 			toast.error("The selected file isn't a valid book, please select another!", ToastConfig);
 			return;
 		}
 
-		const desintation = 'library/' + book.name;
+		const desintation = LIBRARY_PATH + book.name;
 
 		// Check that a book with that name has not already been imported
 		try {
@@ -82,9 +53,20 @@
 			// exist as such this is the inteded behaviour
 		}
 
+		const epub = await EpubBook.epubFromBase64(book.data.toString());
+
+		if (epub === null) {
+			toast.error("The selected file isn't a valid book, please select another!", ToastConfig);
+			return;
+		}
+
+		const cached_cover = await cacheCoverImage(epub);
+
+		let writeResult: WriteFileResult;
+
 		try {
-			await Filesystem.writeFile({
-				path: 'library/' + book.name,
+			writeResult = await Filesystem.writeFile({
+				path: desintation,
 				data: book.data,
 				directory: Directory.Data,
 				recursive: true
@@ -96,7 +78,50 @@
 			return;
 		}
 
+		const epubBook = await EpubBook.fromNewBook(epub, cached_cover, writeResult.uri);
+
+		await addBookToLibrary(epubBook);
 		toast.success('Added the book to your library', ToastConfig);
+	}
+
+	async function cacheCoverImage(book: Book): Promise<string | null> {
+		// @ts-ignore
+		const cover: string = book.cover;
+
+		if (!cover) {
+			return null;
+		}
+
+		let data: string;
+
+		try {
+			// This can fail, although only if the cover url isnt present,
+			// still wrap it just in case the path is missing or otherwise
+			// incorrect
+			data = await book.archive.getBase64(cover);
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+
+		const extesnion = cover.split('.').pop();
+		const covername = nanoid() + '.' + extesnion;
+
+		try {
+			const output = await Filesystem.writeFile({
+				path: 'covers/' + covername,
+				data: data,
+				directory: Directory.Data,
+				recursive: true
+			});
+
+			return output.uri;
+		} catch (error) {
+			console.error(error);
+
+			toast.error('Failed to save the books cover, please try again', ToastConfig);
+			return null;
+		}
 	}
 
 	async function pickBook(): Promise<PickFilesResult | null> {
@@ -122,16 +147,14 @@
 		}
 	}
 
-	async function loadBooks() {
-		// todo
-	}
+	onMount(() => loadLibary());
 </script>
 
 <Layout>
 	<svelte:fragment slot="title">Library</svelte:fragment>
 
 	<svelte:fragment slot="actions">
-		<button class="w-fit h-fit bg-accent text-base-100 p-1 rounded-full" on:click={addBooks}>
+		<button class="w-fit h-fit bg-accent text-base p-1 rounded-full" on:click={addBooks}>
 			<Plus />
 		</button>
 
@@ -139,8 +162,8 @@
 	</svelte:fragment>
 
 	<article class="grid grid-cols-2 gap-4">
-		{#each books as book}
-			<Book {book} />
+		{#each $library.values() as book}
+			<LibraryBook {book} />
 		{/each}
 	</article>
 </Layout>
