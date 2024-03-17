@@ -9,15 +9,18 @@
 	import { onMount } from 'svelte';
 
 	import { Toaster } from 'svelte-french-toast';
+	import { ModeWatcher, mode } from 'mode-watcher';
 
-	styleStatusBar();
+	$: styleStatusBar($mode);
 
-	function styleStatusBar() {
+	function styleStatusBar(mode: string | undefined) {
 		const platform = Capacitor.getPlatform();
+
+		const style = mode === 'light' ? Style.Light : Style.Dark;
 
 		if (platform === 'android' || platform === 'ios') {
 			StatusBar.setOverlaysWebView({ overlay: true });
-			StatusBar.setStyle({ style: Style.Light });
+			StatusBar.setStyle({ style: style });
 		}
 	}
 
@@ -44,8 +47,9 @@
 	});
 </script>
 
+<ModeWatcher />
 <Toaster />
 
-<article class="w-screen h-screen bg-base-100">
+<article class="w-screen h-screen bg-base">
 	<slot />
 </article>
