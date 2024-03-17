@@ -154,7 +154,10 @@
 	<svelte:fragment slot="title">Library</svelte:fragment>
 
 	<svelte:fragment slot="actions">
-		<button class="w-fit h-fit bg-accent text-base p-1 rounded-full" on:click={addBooks}>
+		<button
+			class="w-fit h-fit bg-accent text-base p-1 rounded-full transition-all duration-200 active:scale-75"
+			on:click={addBooks}
+		>
 			<Plus />
 		</button>
 
