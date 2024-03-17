@@ -15,7 +15,7 @@ There are plenty of ebook readers available, why make another. Mostly for more s
 
 ![Phones](./display/phones.png)
 
-## Buidling from source
+## Building from source
 
 First obtain the source code from this repository
 
@@ -44,3 +44,7 @@ pnpm cap build
 ## Tech Stack
 
 Pudding is built with SvelteKit as a Capacitor app targetting both iOS and Android. 
+
+## License
+
+Pudding is open source and licensed under the GNU GPLv3 licnse, you can find a copy of the license [here](./LICENSE) for more information.
