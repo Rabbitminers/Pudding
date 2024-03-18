@@ -11,7 +11,7 @@
 		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"icons": "npx @capacitor/assets generate --iconBackgroundColor '#f4c56a' --splashBackgroundColor '#f4c56a' --ios --android"
+		"icons": "npx @capacitor/assets generate --ios --android"
 	},
 	"devDependencies": {
 		"@capacitor/assets": "^3.0.4",
