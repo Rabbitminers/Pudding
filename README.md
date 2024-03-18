@@ -6,7 +6,7 @@
 A simple mobile app for reading and managing ebooks. With full support for ePub files on both Android and *iOS
 
 > [!NOTE] 
-> although pudding should build to and function on iOS devices it has not been tested on these devices.
+> Although pudding should build to and function on iOS devices it has not been tested on these devices.
 
 ## Why?
 
@@ -25,7 +25,7 @@ Pudding is currently in beta, as such it can currently only be installed either 
 
 ### From Github Releases (Recommended)
 
-This repository includes prebuilt releases of Pudding for Android see the releases tab on the right hand side for a list of available versions.
+This repository includes prebuilt releases of Pudding for Android see the releases tab (on desktop this on the right hand side, on mobile see the bottom of the page) for a list of available versions.
 
 ### Building from source
 
