@@ -12,11 +12,12 @@
 	import type { EpubBook } from '$lib/book';
 	import type { ReaderTheme } from '$lib/types';
 
-	import type { Rendition, Location } from 'epubjs';
+	import type { Rendition, Location, NavItem } from 'epubjs';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
 	import { mode, toggleMode } from 'mode-watcher';
+	import Book from '$lib/components/icons/Book.svelte';
 
 	let path = $page.url.searchParams.get('id');
 	let books = $library;
@@ -49,11 +50,12 @@
 
 	let epub: EpubBook | undefined;
 	let rendition: Rendition | undefined;
-	let overlay = false;
+	let overlay = true;
 
 	let fontSize = localStorageStore<number>('font_size', 10);
 	let fontFamily = localStorageStore<string | null>('font_family', null);
 	let tab: string = TABS.FONT_FAMILY;
+	let showChapters = true;
 
 	let loaded = false;
 
@@ -157,16 +159,20 @@
 		} else {
 			rendition.display();
 		}
+
+		epub.book.navigation.toc.forEach((e) => {});
 	}
 
 	function onRelocate(location: Location) {
 		tab = TABS.CLOSED;
 		overlay = false;
+		showChapters = false;
 
 		library.update((map) => {
 			if (!epub || !epub.book) {
 				return map;
 			}
+
 			const index = location.start.location;
 
 			// todo: Look futher into these percentage calculations
@@ -189,6 +195,23 @@
 		saveLibrary();
 	}
 
+	function chapterList(): NavItem[] {
+		if (!epub || !epub.book) {
+			return [];
+		}
+
+		return epub.book.navigation.toc;
+	}
+
+	function toggleChapterPicker() {
+		showChapters = !showChapters;
+	}
+
+	function openLocation(location: NavItem) {
+		rendition?.display(location.href);
+		toggleOverlay();
+	}
+
 	function toggleFontSizeTab() {
 		tab = tab === TABS.FONT_SIZE ? TABS.CLOSED : TABS.FONT_SIZE;
 	}
@@ -207,6 +230,11 @@
 	}
 
 	function toggleOverlay() {
+		if (overlay && showChapters) {
+			showChapters = false;
+			return;
+		}
+
 		if (overlay && tab !== TABS.CLOSED) {
 			tab = TABS.CLOSED;
 			return;
@@ -235,20 +263,42 @@
 {#if overlay}
 	<article id="overlay" class="pointer-events-none absolute z-10 flex h-full w-full flex-col">
 		<header
-			class="pointer-events-auto flex flex-row justify-between bg-neutral p-6 pt-12 shadow-lg"
+			class="pointer-events-auto z-10 flex flex-row justify-between bg-neutral p-6 pt-12 shadow-lg"
 			transition:slide={{ delay: 300, duration: 600 }}
 		>
 			<h1 class="truncate text-nowrap text-xl font-bold">
 				{epub?.metadata.title}
 			</h1>
 
-			<section class="flex flex-row justify-end gap-4">
+			<section class="ml-4 flex flex-row justify-end gap-4">
+				<button on:click={toggleChapterPicker} class="transition-all duration-200 active:scale-75">
+					<Book />
+				</button>
 				<a href="/"><Home /></a>
 			</section>
 		</header>
 
+		{#if showChapters}
+			<section
+				class="pointer-events-auto z-10 flex-grow overflow-scroll bg-base p-4"
+				transition:slide={{ axis: 'x' }}
+			>
+				{#each chapterList() as chapter}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+					<nav
+						class="w-full truncate text-nowrap rounded-lg py-4 text-lg"
+						on:click={() => openLocation(chapter)}
+					>
+						{chapter.label}
+						<hr />
+					</nav>
+				{/each}
+			</section>
+		{/if}
+
 		<section
-			class="flex-grow bg-black opacity-30 dark:opacity-50"
+			class="absolute h-full w-full bg-black opacity-30 dark:opacity-50"
 			in:fade
 			out:fade={{ delay: 300 }}
 		/>
@@ -278,7 +328,7 @@
 					in:slide={{ delay: tabDelay(), duration: 600 }}
 					out:slide={{ delay: 0, duration: 200 }}
 				>
-					{#each Object.values(FONTS) as font}
+					{#each FONTS as font}
 						<button
 							style="font-family: '{font}'"
 							class="h-12 w-12"
