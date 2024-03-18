@@ -10,7 +10,7 @@ A simple mobile app for reading and managing ebooks. With full support for ePub 
 
 ## Why?
 
-There are plenty of ebook readers available, why make another? Mostly for more simplicity, a simpler more friendly Ui and all the features we personally where looking for, (while having no adverts).
+There are plenty of ebook readers available, why make another? Mostly for more simplicity, a simpler more friendly UI and all the features we where personally looking for. (whilst having no adverts)
 
 ---
 
