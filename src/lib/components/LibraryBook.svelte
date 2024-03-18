@@ -4,6 +4,10 @@
 	import { goto } from '$app/navigation';
 	import { Capacitor } from '@capacitor/core';
 	import type { EpubBook } from '$lib/book';
+	import { Filesystem } from '@capacitor/filesystem';
+	import { removeBookFromLibrary } from '$lib/library';
+	import toast from 'svelte-french-toast';
+	import { ToastConfig } from '$lib/toast/constants';
 
 	export let book: EpubBook;
 
@@ -52,10 +56,38 @@
 		const id = book.metadata.book_id;
 		if (duration >= 600) {
 			await Haptics.impact({ style: ImpactStyle.Medium });
-			goto(`/details/?id=${id}`);
+			removeBook();
 		} else {
 			goto(`/reader/?id=${id}`);
 		}
+	}
+
+	async function removeBook(): Promise<void> {
+		const confirmation = confirm(`Do you want to remove ${book.metadata.title} from your library?`);
+
+		if (!confirmation) {
+			return;
+		}
+
+		// Remove the book from the library first so that
+		// if we end up with an invalid state it won't be
+		// loaded
+		await removeBookFromLibrary(book.metadata.book_id);
+
+		try {
+			if (book.metadata.coverImage) {
+				await Filesystem.deleteFile({ path: book.metadata.coverImage });
+			}
+
+			await Filesystem.deleteFile({ path: book.metadata.file });
+		} catch (error) {
+			console.error(`Error removing book: ${error}`);
+
+			toast.error('An error occured while removing the book files', ToastConfig);
+			return;
+		}
+
+		toast.success('Successfully removed the book from your library', ToastConfig);
 	}
 </script>
 
@@ -72,7 +104,7 @@
 				alt="cover"
 			/>
 		{:else}
-			<div class="h-full w-full bg-emerald-500" />
+			<div class="missing-image h-full w-full" />
 		{/if}
 	</section>
 
@@ -85,3 +117,15 @@
 		</div>
 	</section>
 </div>
+
+<style>
+	.missing-image {
+		background: wheat;
+		background-image: radial-gradient(white 20%, transparent 0),
+			radial-gradient(white 20%, transparent 0);
+		background-size: 30px 30px;
+		background-position:
+			0 0,
+			15px 15px;
+	}
+</style>
