@@ -53,6 +53,11 @@ Now you can build Pudding, run the following command and select the platform you
 pnpm cap build
 ```
 
+---
+
+![Reading](./display/reading.png)
+
+
 ## Tech Stack
 
 Pudding is built with SvelteKit as a Capacitor app targetting both iOS and Android. 
