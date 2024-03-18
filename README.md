@@ -18,7 +18,7 @@ There are plenty of ebook readers available, why make another? Mostly for more s
 
 ## Installation
 
-Pudding is currently in beta, as such it can currently only be installed either from releases here on github or built from source. See instructions for each of these bellow. Once we reach full releases pudding will be distributed on Google Play and F-Droid with the potential of official iOS releases.
+Pudding is currently in beta, as such it can currently only be installed either from releases here on github or built from source. See instructions for each of these below. Once we reach full releases pudding will be distributed on Google Play and F-Droid with the potential of official iOS releases.
 
 > [!WARNING]
 > Pudding is not yet in full release, although the app should be fully functional it has not been extensively tested so you may encounter some bugs, if you do find any please report them.
@@ -64,4 +64,4 @@ Pudding is built with SvelteKit as a Capacitor app targetting both iOS and Andro
 
 ## License
 
-Pudding is open source and licensed under the GNU GPLv3 licnse, you can find a copy of the license [here](./LICENSE) for more information.
+Pudding is open source and licensed under the GNU GPLv3 license, you can find a copy of the license [here](./LICENSE) for more information.
