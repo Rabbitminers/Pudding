@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LibraryBook from '$lib/components/LibraryBook.svelte';
-	import Gear from '$lib/components/icons/Gear.svelte';
+	import Sun from '$lib/components/icons/Sun.svelte';
+	import Moon from '$lib/components/icons/Moon.svelte';
 	import Plus from '$lib/components/icons/Plus.svelte';
 	import Layout from '$lib/components/Layout.svelte';
 
@@ -18,6 +19,22 @@
 	import { Book } from 'epubjs';
 	import { nanoid } from 'nanoid';
 	import { onMount } from 'svelte';
+	import { toggleMode, mode } from 'mode-watcher';
+
+	$: books = orderLibrary($library);
+
+	function orderLibrary(library: Map<String, EpubBook>): EpubBook[] {
+		const books = Array.from(library.values());
+
+		books.sort((a, b) => {
+			const second = new Date(a.metadata.lastRead);
+			const first = new Date(b.metadata.lastRead);
+
+			return first.getTime() - second.getTime();
+		});
+
+		return books;
+	}
 
 	async function addBooks(): Promise<void> {
 		const result = await pickBook();
@@ -104,8 +121,8 @@
 			return null;
 		}
 
-		const extesnion = cover.split('.').pop();
-		const covername = nanoid() + '.' + extesnion;
+		const extension = cover.split('.').pop();
+		const covername = nanoid() + '.' + extension;
 
 		try {
 			const output = await Filesystem.writeFile({
@@ -155,17 +172,23 @@
 
 	<svelte:fragment slot="actions">
 		<button
-			class="w-fit h-fit bg-accent text-base p-1 rounded-full transition-all duration-200 active:scale-75"
+			class="h-fit w-fit rounded-full bg-accent p-1 text-base transition-all duration-200 active:scale-75"
 			on:click={addBooks}
 		>
 			<Plus />
 		</button>
 
-		<a class="w-fit h-fit" href="/settings"><Gear /></a>
+		<button class="h-fit w-fit transition-all duration-200 active:scale-75" on:click={toggleMode}>
+			{#if $mode === 'light'}
+				<Moon />
+			{:else}
+				<Sun />
+			{/if}
+		</button>
 	</svelte:fragment>
 
 	<article class="grid grid-cols-2 gap-4">
-		{#each $library.values() as book}
+		{#each books as book}
 			<LibraryBook {book} />
 		{/each}
 	</article>
