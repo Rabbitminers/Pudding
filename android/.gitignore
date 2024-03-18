@@ -17,7 +17,7 @@ bin/
 gen/
 out/
 #  Uncomment the following line in case you need and you don't have the release build type files in your app
-# release/
+release/
 
 # Gradle files
 .gradle/
@@ -99,3 +99,6 @@ app/src/main/assets/public
 app/src/main/assets/capacitor.config.json
 app/src/main/assets/capacitor.plugins.json
 app/src/main/res/xml/config.xml
+
+.idea/
+
